@@ -16312,12 +16312,15 @@ openfl.display.Tilesheet.prototype = {
 };
 var scenes = {};
 scenes.Game = function() {
+	this._fpsMax = 0;
+	this._fpsMin = 60;
 	this._SPAWN_RATE = 0.3;
 	this._logTimer = 0;
 	com.haxepunk.Scene.call(this);
 	this._player = new entities.Player();
-	this._lScore = new com.haxepunk.graphics.Text("SCORE: 0",16,16);
-	this._lRestart = new com.haxepunk.graphics.Text("ENTER TO RESTART",16,48);
+	this._lScore = new com.haxepunk.graphics.Text("SCORE: 0",20,20);
+	this._lRestart = new com.haxepunk.graphics.Text("ENTER TO RESTART",20,48);
+	this._lDebug = new com.haxepunk.graphics.Text("FPS: -- \tMEM: -- ",4,2,null,null,{ color : 65280});
 };
 $hxClasses["scenes.Game"] = scenes.Game;
 scenes.Game.__name__ = ["scenes","Game"];
@@ -16328,6 +16331,7 @@ scenes.Game.prototype = $extend(com.haxepunk.Scene.prototype,{
 		this.add(this._player);
 		this.addGraphic(this._lScore);
 		this.addGraphic(this._lRestart);
+		this.addGraphic(this._lDebug);
 		this.init();
 	}
 	,init: function() {
@@ -16359,9 +16363,10 @@ scenes.Game.prototype = $extend(com.haxepunk.Scene.prototype,{
 	,log: function(sampleTime) {
 		this._logTimer += com.haxepunk.HXP.elapsed;
 		if(this._logTimer >= sampleTime) {
-			var fps = com.haxepunk.HXP.round(com.haxepunk.HXP.frameRate,2);
-			var mem = com.haxepunk.HXP.round(flash.system.System.get_totalMemory() / 1024 / 1024,2);
-			haxe.Log.trace("<sample>\n\t<fps>" + fps + "</fps>\n\t<memory>" + mem + "</memory>\n</sample>",{ fileName : "Game.hx", lineNumber : 96, className : "scenes.Game", methodName : "log"});
+			this._fps = com.haxepunk.HXP.round(com.haxepunk.HXP.frameRate,2);
+			if(this._fps > this._fpsMax) this._fpsMax = this._fps;
+			if(this._fps < this._fpsMin) this._fpsMin = this._fps;
+			this._lDebug.set_text("FPS: " + this._fps + " \tMIN: " + this._fpsMin + " \tMAX: " + this._fpsMax);
 			this._logTimer = 0;
 		}
 	}

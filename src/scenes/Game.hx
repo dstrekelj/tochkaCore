@@ -19,8 +19,9 @@ class Game extends Scene
 		super();
 		
 		_player = new Player();
-		_lScore = new Text("SCORE: 0", 16, 16);
-		_lRestart = new Text("ENTER TO RESTART", 16, 48);
+		_lScore = new Text("SCORE: 0", 20, 20);
+		_lRestart = new Text("ENTER TO RESTART", 20, 48);
+		_lDebug = new Text("FPS: -- \tMEM: -- ", 4, 2, {color: 0x00ff00});
 	}
 	
 	override public function begin() : Void
@@ -30,6 +31,7 @@ class Game extends Scene
 		add(_player);
 		addGraphic(_lScore);
 		addGraphic(_lRestart);
+		addGraphic(_lDebug);
 		
 		init();
 	}
@@ -91,9 +93,22 @@ class Game extends Scene
 		_logTimer += HXP.elapsed;
 		if (_logTimer >= sampleTime)
 		{
-			var fps : Float = HXP.round(HXP.frameRate, 2);
+			_fps = HXP.round(HXP.frameRate, 2);
+			if (_fps > _fpsMax)
+			{
+				_fpsMax = _fps;
+			}
+			if (_fps < _fpsMin)
+			{
+				_fpsMin = _fps;
+			}
+#if !html5
 			var mem : Float = HXP.round(System.totalMemory / 1024 / 1024, 2);
-			trace("<sample>\n\t<fps>" + fps + "</fps>\n\t<memory>" + mem + "</memory>\n</sample>");
+			//trace("<sample>\n\t<fps>" + fps + "</fps>\n\t<memory>" + mem + "</memory>\n</sample>");
+			_lDebug.text = 'FPS: $_fps \tMIN: $_fpsMin \tMAX: $_fpsMax \tMEM: $mem';
+#else
+			_lDebug.text = 'FPS: $_fps \tMIN: $_fpsMin \tMAX: $_fpsMax';
+#end
 			_logTimer = 0;
 		}
 	}
@@ -106,4 +121,9 @@ class Game extends Scene
 	
 	private var _lScore : Text;
 	private var _lRestart : Text;
+	private var _lDebug : Text;
+	
+	private var _fps : Float;
+	private var _fpsMin : Float = 60;  
+	private var _fpsMax : Float = 0;
 }

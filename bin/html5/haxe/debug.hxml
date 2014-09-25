@@ -7,7 +7,7 @@
 -D html5
 -D web
 -resource C:\HaxeToolkit\haxe\lib\HaxePunk\2,5,2\assets\font\04B_03__.ttf.hash@__ASSET__font_04b_03___ttf
--resource C:\HaxeProjects\HaxePunk\tochka\assets\font\04B_03__.ttf.hash@__ASSET__font_5
+-resource C:\HaxeProjects\HaxePunk\tochkaCore\assets\font\04B_03__.ttf.hash@__ASSET__font_5
 -js bin/html5/bin/Main.js
 -cp bin/html5/haxe
 -D html5
