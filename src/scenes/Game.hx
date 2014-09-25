@@ -102,12 +102,18 @@ class Game extends Scene
 			{
 				_fpsMin = _fps;
 			}
+			if (_fpsAvg == 0) {
+				_fpsAvg += _fps;
+			} else {
+				_fpsAvg += _fps;
+				_fpsAvg = HXP.round(_fpsAvg / 2, 2);
+			}
 #if !html5
 			var mem : Float = HXP.round(System.totalMemory / 1024 / 1024, 2);
 			//trace("<sample>\n\t<fps>" + fps + "</fps>\n\t<memory>" + mem + "</memory>\n</sample>");
 			_lDebug.text = 'FPS: $_fps \tMIN: $_fpsMin \tMAX: $_fpsMax \tMEM: $mem';
 #else
-			_lDebug.text = 'FPS: $_fps \tMIN: $_fpsMin \tMAX: $_fpsMax';
+			_lDebug.text = 'FPS: $_fps \tMIN: $_fpsMin \tMAX: $_fpsMax \tAVG: $_fpsAvg';
 #end
 			_logTimer = 0;
 		}
@@ -126,4 +132,5 @@ class Game extends Scene
 	private var _fps : Float;
 	private var _fpsMin : Float = 60;  
 	private var _fpsMax : Float = 0;
+	private var _fpsAvg : Float = 0;
 }

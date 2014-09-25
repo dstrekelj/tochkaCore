@@ -16312,6 +16312,7 @@ openfl.display.Tilesheet.prototype = {
 };
 var scenes = {};
 scenes.Game = function() {
+	this._fpsAvg = 0;
 	this._fpsMax = 0;
 	this._fpsMin = 60;
 	this._SPAWN_RATE = 0.3;
@@ -16366,7 +16367,11 @@ scenes.Game.prototype = $extend(com.haxepunk.Scene.prototype,{
 			this._fps = com.haxepunk.HXP.round(com.haxepunk.HXP.frameRate,2);
 			if(this._fps > this._fpsMax) this._fpsMax = this._fps;
 			if(this._fps < this._fpsMin) this._fpsMin = this._fps;
-			this._lDebug.set_text("FPS: " + this._fps + " \tMIN: " + this._fpsMin + " \tMAX: " + this._fpsMax);
+			if(this._fpsAvg == 0) this._fpsAvg += this._fps; else {
+				this._fpsAvg += this._fps;
+				this._fpsAvg = com.haxepunk.HXP.round(this._fpsAvg / 2,2);
+			}
+			this._lDebug.set_text("FPS: " + this._fps + " \tMIN: " + this._fpsMin + " \tMAX: " + this._fpsMax + " \tAVG: " + this._fpsAvg);
 			this._logTimer = 0;
 		}
 	}
