@@ -20,8 +20,8 @@ class Game extends Scene
 		
 		_player = new Player();
 		_lScore = new Text("SCORE: 0", 20, 20);
-		_lRestart = new Text("ENTER TO RESTART", 20, 48);
-		_lDebug = new Text("FPS: -- \tMEM: -- ", 4, 2, {color: 0x00ff00});
+		_lRestart = new Text("PRESS SPACE / UP / W TO START / JUMP", 20, 36);
+		_lDebug = new Text("", 4, 2, {color: 0x00ff00});
 	}
 	
 	override public function begin() : Void
@@ -43,8 +43,8 @@ class Game extends Scene
 		
 		_player.init();
 		
-		_lScore.visible = false;
-		_lRestart.visible = false;
+		_lScore.text = "SCORE: 0";
+		_lRestart.text = "PRESS SPACE / UP / W TO START / JUMP";
 	}
 	
 	override public function update() : Void
@@ -65,6 +65,7 @@ class Game extends Scene
 	
 	private function play() : Void
 	{
+		_lRestart.visible = false;
 		_lScore.visible = true;
 		_spawnTimer += HXP.elapsed;
 		if (_spawnTimer >= _SPAWN_RATE)
@@ -78,12 +79,15 @@ class Game extends Scene
 	}
 	
 	private function showScoreboard() : Void
-	{
-		_lRestart.visible = true;
+	{		
+		if (this.count < 5) {
+			_lRestart.text = "PRESS SPACE / UP / W TO RESTART";
+			_lRestart.visible = true;
 		
-		if (!Obstacle.isOnCamera && Input.pressed(Key.ENTER))
-		{
-			init();
+			if (Input.pressed("player_jump"))
+			{
+				init();
+			}
 		}
 	}
 	

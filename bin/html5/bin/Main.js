@@ -16320,8 +16320,8 @@ scenes.Game = function() {
 	com.haxepunk.Scene.call(this);
 	this._player = new entities.Player();
 	this._lScore = new com.haxepunk.graphics.Text("SCORE: 0",20,20);
-	this._lRestart = new com.haxepunk.graphics.Text("ENTER TO RESTART",20,48);
-	this._lDebug = new com.haxepunk.graphics.Text("FPS: -- \tMEM: -- ",4,2,null,null,{ color : 65280});
+	this._lRestart = new com.haxepunk.graphics.Text("PRESS SPACE / UP / W TO START / JUMP",20,36);
+	this._lDebug = new com.haxepunk.graphics.Text("",4,2,null,null,{ color : 65280});
 };
 $hxClasses["scenes.Game"] = scenes.Game;
 scenes.Game.__name__ = ["scenes","Game"];
@@ -16339,8 +16339,8 @@ scenes.Game.prototype = $extend(com.haxepunk.Scene.prototype,{
 		this._score = 0;
 		this._spawnTimer = 0;
 		this._player.init();
-		this._lScore.set_visible(false);
-		this._lRestart.set_visible(false);
+		this._lScore.set_text("SCORE: 0");
+		this._lRestart.set_text("PRESS SPACE / UP / W TO START / JUMP");
 	}
 	,update: function() {
 		com.haxepunk.Scene.prototype.update.call(this);
@@ -16348,6 +16348,7 @@ scenes.Game.prototype = $extend(com.haxepunk.Scene.prototype,{
 		this.log(1);
 	}
 	,play: function() {
+		this._lRestart.set_visible(false);
 		this._lScore.set_visible(true);
 		this._spawnTimer += com.haxepunk.HXP.elapsed;
 		if(this._spawnTimer >= this._SPAWN_RATE) {
@@ -16358,8 +16359,11 @@ scenes.Game.prototype = $extend(com.haxepunk.Scene.prototype,{
 		this._lScore.set_text("SCORE: " + (this._score | 0));
 	}
 	,showScoreboard: function() {
-		this._lRestart.set_visible(true);
-		if(!entities.Obstacle.isOnCamera && com.haxepunk.utils.Input.pressed(13)) this.init();
+		if(this._count < 5) {
+			this._lRestart.set_text("PRESS SPACE / UP / W TO RESTART");
+			this._lRestart.set_visible(true);
+			if(com.haxepunk.utils.Input.pressed("player_jump")) this.init();
+		}
 	}
 	,log: function(sampleTime) {
 		this._logTimer += com.haxepunk.HXP.elapsed;
