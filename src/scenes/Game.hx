@@ -60,7 +60,7 @@ class Game extends Scene
 			showScoreboard();
 		}
 			
-		log(1);
+		log(0.2);
 	}
 	
 	private function play() : Void
@@ -90,14 +90,14 @@ class Game extends Scene
 			}
 		}
 	}
-	
-	private var _logTimer : Float = 0;
+		
 	private function log(sampleTime : Float) : Void
 	{
 		_logTimer += HXP.elapsed;
 		if (_logTimer >= sampleTime)
 		{
 			_fps = HXP.round(HXP.frameRate, 2);
+			_fpsCount += 1;
 			if (_fps > _fpsMax)
 			{
 				_fpsMax = _fps;
@@ -105,13 +105,14 @@ class Game extends Scene
 			if (_fps < _fpsMin)
 			{
 				_fpsMin = _fps;
-			}
+			}/*
 			if (_fpsAvg == 0) {
 				_fpsAvg += _fps;
 			} else {
 				_fpsAvg += _fps;
 				_fpsAvg = HXP.round(_fpsAvg / 2, 2);
-			}
+			}*/				
+			_fpsAvg = HXP.round(_fpsAvg + ((_fps - _fpsAvg) / _fpsCount), 2);
 #if !html5
 			var mem : Float = HXP.round(System.totalMemory / 1024 / 1024, 2);
 			//trace("<sample>\n\t<fps>" + fps + "</fps>\n\t<memory>" + mem + "</memory>\n</sample>");
@@ -137,4 +138,7 @@ class Game extends Scene
 	private var _fpsMin : Float = 60;  
 	private var _fpsMax : Float = 0;
 	private var _fpsAvg : Float = 0;
+	private var _fpsCount : Float = 0;
+	
+	private var _logTimer : Float = 0;
 }

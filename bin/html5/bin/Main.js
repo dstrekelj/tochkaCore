@@ -16312,11 +16312,12 @@ openfl.display.Tilesheet.prototype = {
 };
 var scenes = {};
 scenes.Game = function() {
+	this._logTimer = 0;
+	this._fpsCount = 0;
 	this._fpsAvg = 0;
 	this._fpsMax = 0;
 	this._fpsMin = 60;
 	this._SPAWN_RATE = 0.3;
-	this._logTimer = 0;
 	com.haxepunk.Scene.call(this);
 	this._player = new entities.Player();
 	this._lScore = new com.haxepunk.graphics.Text("SCORE: 0",20,20);
@@ -16345,7 +16346,7 @@ scenes.Game.prototype = $extend(com.haxepunk.Scene.prototype,{
 	,update: function() {
 		com.haxepunk.Scene.prototype.update.call(this);
 		if(this._player.isReady && this._player.isAlive) this.play(); else if(!this._player.isAlive) this.showScoreboard();
-		this.log(1);
+		this.log(0.2);
 	}
 	,play: function() {
 		this._lRestart.set_visible(false);
@@ -16369,12 +16370,10 @@ scenes.Game.prototype = $extend(com.haxepunk.Scene.prototype,{
 		this._logTimer += com.haxepunk.HXP.elapsed;
 		if(this._logTimer >= sampleTime) {
 			this._fps = com.haxepunk.HXP.round(com.haxepunk.HXP.frameRate,2);
+			this._fpsCount += 1;
 			if(this._fps > this._fpsMax) this._fpsMax = this._fps;
 			if(this._fps < this._fpsMin) this._fpsMin = this._fps;
-			if(this._fpsAvg == 0) this._fpsAvg += this._fps; else {
-				this._fpsAvg += this._fps;
-				this._fpsAvg = com.haxepunk.HXP.round(this._fpsAvg / 2,2);
-			}
+			this._fpsAvg = com.haxepunk.HXP.round(this._fpsAvg + (this._fps - this._fpsAvg) / this._fpsCount,2);
 			this._lDebug.set_text("FPS: " + this._fps + " \tMIN: " + this._fpsMin + " \tMAX: " + this._fpsMax + " \tAVG: " + this._fpsAvg);
 			this._logTimer = 0;
 		}
