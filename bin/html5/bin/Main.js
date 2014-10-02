@@ -1493,7 +1493,7 @@ var Main = function(width,height,frameRate,fixed) {
 	if(frameRate == null) frameRate = 60;
 	if(height == null) height = 0;
 	if(width == null) width = 0;
-	com.haxepunk.Engine.call(this,640,480,60,false);
+	com.haxepunk.Engine.call(this,640,480,60,true);
 };
 $hxClasses["Main"] = Main;
 Main.__name__ = ["Main"];
@@ -16369,7 +16369,7 @@ scenes.Game.prototype = $extend(com.haxepunk.Scene.prototype,{
 	,log: function(sampleTime) {
 		this._logTimer += com.haxepunk.HXP.elapsed;
 		if(this._logTimer >= sampleTime) {
-			this._fps = com.haxepunk.HXP.round(com.haxepunk.HXP.frameRate,2);
+			if(com.haxepunk.HXP.frameRate > 60) this._fps = 60; else this._fps = com.haxepunk.HXP.round(com.haxepunk.HXP.frameRate,2);
 			this._fpsCount += 1;
 			if(this._fps > this._fpsMax) this._fpsMax = this._fps;
 			if(this._fps < this._fpsMin) this._fpsMin = this._fps;

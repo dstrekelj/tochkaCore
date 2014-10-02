@@ -96,7 +96,7 @@ class Game extends Scene
 		_logTimer += HXP.elapsed;
 		if (_logTimer >= sampleTime)
 		{
-			_fps = HXP.round(HXP.frameRate, 2);
+			_fps = (HXP.frameRate > 60) ? 60 : HXP.round(HXP.frameRate, 2);
 			_fpsCount += 1;
 			if (_fps > _fpsMax)
 			{
@@ -105,13 +105,7 @@ class Game extends Scene
 			if (_fps < _fpsMin)
 			{
 				_fpsMin = _fps;
-			}/*
-			if (_fpsAvg == 0) {
-				_fpsAvg += _fps;
-			} else {
-				_fpsAvg += _fps;
-				_fpsAvg = HXP.round(_fpsAvg / 2, 2);
-			}*/				
+			}	
 			_fpsAvg = HXP.round(_fpsAvg + ((_fps - _fpsAvg) / _fpsCount), 2);
 #if !html5
 			var mem : Float = HXP.round(System.totalMemory / 1024 / 1024, 2);

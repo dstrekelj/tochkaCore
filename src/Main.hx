@@ -10,7 +10,7 @@ class Main extends Engine
 	
 	override public function new(width : Int = 0, height : Int = 0, frameRate : Float = 60, fixed : Bool = false) : Void
 	{
-		super(640, 480, 60, false);
+		super(640, 480, 60, true);
 	}
 	
 	override public function init()
