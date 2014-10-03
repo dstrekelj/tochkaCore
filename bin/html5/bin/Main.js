@@ -16313,10 +16313,12 @@ openfl.display.Tilesheet.prototype = {
 var scenes = {};
 scenes.Game = function() {
 	this._logTimer = 0;
-	this._fpsCount = 0;
+	this._fpsSqrSum = 0;
+	this._fpsSum = 0;
 	this._fpsAvg = 0;
 	this._fpsMax = 0;
 	this._fpsMin = 60;
+	this._fpsCount = 0;
 	this._SPAWN_RATE = 0.3;
 	com.haxepunk.Scene.call(this);
 	this._player = new entities.Player();
@@ -16371,10 +16373,13 @@ scenes.Game.prototype = $extend(com.haxepunk.Scene.prototype,{
 		if(this._logTimer >= sampleTime) {
 			if(com.haxepunk.HXP.frameRate > 60) this._fps = 60; else this._fps = com.haxepunk.HXP.round(com.haxepunk.HXP.frameRate,2);
 			this._fpsCount += 1;
+			this._fpsSum += this._fps;
+			this._fpsSqrSum += this._fps * this._fps;
 			if(this._fps > this._fpsMax) this._fpsMax = this._fps;
 			if(this._fps < this._fpsMin) this._fpsMin = this._fps;
 			this._fpsAvg = com.haxepunk.HXP.round(this._fpsAvg + (this._fps - this._fpsAvg) / this._fpsCount,2);
-			this._lDebug.set_text("FPS: " + this._fps + " \tMIN: " + this._fpsMin + " \tMAX: " + this._fpsMax + " \tAVG: " + this._fpsAvg);
+			this._fpsVar = com.haxepunk.HXP.round(1 / this._fpsCount * (this._fpsSqrSum - this._fpsSum * this._fpsSum / this._fpsCount),4);
+			this._lDebug.set_text("FPS: " + this._fps + " \tMIN: " + this._fpsMin + " \tMAX: " + this._fpsMax + " \tAVG: " + this._fpsAvg + " \tVAR: " + this._fpsVar);
 			this._logTimer = 0;
 		}
 	}

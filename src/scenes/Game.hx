@@ -96,8 +96,19 @@ class Game extends Scene
 		_logTimer += HXP.elapsed;
 		if (_logTimer >= sampleTime)
 		{
+			/**
+			 * Round up recorded frame rate to 60. Increase the
+			 * counter. Calculate the sum and sum of squares (for
+			 * variance calculation).			 
+			 */
 			_fps = (HXP.frameRate > 60) ? 60 : HXP.round(HXP.frameRate, 2);
-			_fpsCount += 1;
+			_fpsCount += 1;			
+			_fpsSum += _fps;
+			_fpsSqrSum += (_fps * _fps);
+			
+			/**
+			 * Determine minimum and maximum achieved frame rate.
+			 */
 			if (_fps > _fpsMax)
 			{
 				_fpsMax = _fps;
@@ -106,13 +117,26 @@ class Game extends Scene
 			{
 				_fpsMin = _fps;
 			}	
+			
+			/**
+			 * Calculating the (incremental) average.
+			 */
 			_fpsAvg = HXP.round(_fpsAvg + ((_fps - _fpsAvg) / _fpsCount), 2);
+			
+			/**
+			 * Calculating the (running) population variance.
+			 */
+			_fpsVar = HXP.round((1 / _fpsCount) * (_fpsSqrSum - ((_fpsSum * _fpsSum) / _fpsCount)), 4);
+			
+			/**
+			 * Display frame rate information.
+			 */
 #if !html5
 			var mem : Float = HXP.round(System.totalMemory / 1024 / 1024, 2);
 			//trace("<sample>\n\t<fps>" + fps + "</fps>\n\t<memory>" + mem + "</memory>\n</sample>");
 			_lDebug.text = 'FPS: $_fps \tMIN: $_fpsMin \tMAX: $_fpsMax \tMEM: $mem';
 #else
-			_lDebug.text = 'FPS: $_fps \tMIN: $_fpsMin \tMAX: $_fpsMax \tAVG: $_fpsAvg';
+			_lDebug.text = 'FPS: $_fps \tMIN: $_fpsMin \tMAX: $_fpsMax \tAVG: $_fpsAvg \tVAR: $_fpsVar';
 #end
 			_logTimer = 0;
 		}
@@ -129,10 +153,14 @@ class Game extends Scene
 	private var _lDebug : Text;
 	
 	private var _fps : Float;
+	private var _fpsCount : Float = 0;
 	private var _fpsMin : Float = 60;  
 	private var _fpsMax : Float = 0;
-	private var _fpsAvg : Float = 0;
-	private var _fpsCount : Float = 0;
+	private var _fpsAvg : Float = 0;	
+	
+	private var _fpsVar : Float;
+	private var _fpsSum : Float = 0;
+	private var _fpsSqrSum : Float = 0;	
 	
 	private var _logTimer : Float = 0;
 }
